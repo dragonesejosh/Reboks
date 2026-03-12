@@ -17,6 +17,10 @@ A['courts'] = Config(5, base)
 
 import sys
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        for name, config in A.items():
+            print(f"{name}:\t{config._filter(3, 'group_venue_filter')}")
+        sys.exit(1)
     for name in sys.argv[1:]:
         config = A.get(name, None)
         if config is None:
