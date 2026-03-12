@@ -1,5 +1,5 @@
 import urllib.parse as parse
-from filters import filters
+from filters import group_venue_filter
 import webbrowser
 
 group_booking = "https://reboks.nus.edu.sg/nus_public_web/public/index.php/facilities/group_booking?"
@@ -41,6 +41,8 @@ class Config:
         """
         Set the venue by id.
         """
+        if str(venue_id) not in group_venue_filter:
+            raise ValueError(f"Venue id {venue_id} not found in list of venues.")
         self.data['group_venue_filter'] = str(venue_id)
         return self
 
@@ -69,7 +71,7 @@ class Config:
     
     def set_time(self, time_from, time_to):
         """
-        e.g. 08:00 AM, 8 AM
+        e.g. 8 AM, 08:00 AM
         """
         self.data['time_filter_from'] = parse.quote(time_from)
         self.data['time_filter_to'] = parse.quote(time_to)
@@ -79,26 +81,47 @@ class Config:
         """
         Search for available booking on Reboks.
         """
-        url = group_booking + '&'.join(f"{k}={v}" for (k, v) in self.data.items())
-        webbrowser.open(url)
+        webbrowser.open(self.booking_url())
+
+    def booking_url(self):
+        """
+        Return the group booking URL for this configuration.
+        """
+        return group_booking + '&'.join(f"{k}={v}" for (k, v) in self.data.items())
 
     def open_schedule(self):
         """
         Search for the current bookings by others on Reboks.
+        """
+        webbrowser.open(self.schedule_url())
+
+    def schedule_url(self):
+        """
+        Return the schedule URL for this configuration.
         """
         d2 = {
             'venue_id': self.data['group_venue_filter'],
             'date_from': self.data['date_filter_from'],
             'date_to': self.data['date_filter_to']
         }
-        url = schedule + '&'.join(f"{k}={v}" for (k, v) in d2.items())
-        webbrowser.open(url)
+        return schedule + '&'.join(f"{k}={v}" for (k, v) in d2.items())
     
-    def _filter(self, filter_type, filter_id):
-        return filters[filter_type].get(self.data[filter_id], 'Unknown')
+    def get_venue(self):
+        return group_venue_filter[self.data['group_venue_filter']]
+    
+    def get_day(self):
+        if 'day_filter' not in self.data:
+            return 'Any'
+        return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][int(self.data['day_filter']) - 1]
+    
+    def get_date(self):
+        return parse.unquote(self.data['date_filter_from']) + " to " + parse.unquote(self.data['date_filter_to'])
+    
+    def get_time(self):
+        return parse.unquote(self.data['time_filter_from']) + " to " + parse.unquote(self.data['time_filter_to'])
 
     def __str__(self):
-        return f"""Venue:\t{self._filter(3, 'group_venue_filter')}
-Day:\t{self._filter(4, 'day_filter') if 'day_filter' in self.data else 'Any'}
-Date:\t{parse.unquote(self.data['date_filter_from'])} to {parse.unquote(self.data['date_filter_to'])}
-Time:\t{parse.unquote(self.data['time_filter_from'])} to {parse.unquote(self.data['time_filter_to'])}"""
+        return f"""Venue:\t{self.get_venue()}
+Day:\t{self.get_day()}
+Date:\t{self.get_date()}
+Time:\t{self.get_time()}"""
