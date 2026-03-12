@@ -28,7 +28,7 @@ class Config:
         'group_filter_one': '94', #Sports
         'group_filter_two': '108', #Other Sports Activity
         'group_activity_filter': '246', #Other Sports Activity
-        'group_subvenue_filter': '';
+        'group_subvenue_filter': '',
         'search': 'Search'
     }
 
@@ -38,12 +38,17 @@ class Config:
         self.set_venue(venue_id)
 
     def set_venue(self, venue_id):
+        """
+        Set the venue by id.
+        """
         self.data['group_venue_filter'] = str(venue_id)
         return self
 
     def set_day(self, day=None):
         """
         1:Monday - 6:Saturday
+
+        Use with no params to search for all days.
         """
         if day is None:
             self.data.pop('day_filter', None)
@@ -52,6 +57,9 @@ class Config:
         return self
 
     def set_date(self, date_from, date_to=None):
+        """
+        e.g. 28 Mar, 28 Mar 2026
+        """
         self.data['date_filter_from'] = parse.quote(date_from)
         if date_to:
             self.data['date_filter_to'] = parse.quote(date_to)
@@ -61,7 +69,7 @@ class Config:
     
     def set_time(self, time_from, time_to):
         """
-        Include the AM/PM
+        e.g. 08:00 AM, 8 AM
         """
         self.data['time_filter_from'] = parse.quote(time_from)
         self.data['time_filter_to'] = parse.quote(time_to)
