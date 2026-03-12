@@ -1,10 +1,11 @@
-filters = [{
+filters = [
+{ #group_filter_one
     '90': 'Academic',
     '91': 'Arts & Culture',
     '92': 'General',#
     '94': 'Sports',#
     '89': 'University Events'
-}, {
+}, { #group_filter_two
     '95': 'All',
     '96': 'All',
     '100': 'All',
@@ -18,7 +19,7 @@ filters = [{
     '104': 'Sports Club Training',
     '107': 'Staff Team Training',
     '103': 'Varsity Team Training'
-}, {
+}, { #group_activity_filter
     '83': 'Academic Examination',
     '186': 'Aerobics (Sports Club)',
     '187': 'Aikido (Sports Club)',
@@ -225,7 +226,7 @@ filters = [{
     '147': 'Wushu (Competition)',
     '200': 'Wushu (Sports Club)',
     '185': 'Wushu (Training)'
-}, {
+}, { #group_venue_filter
     '48': 'CFA Studios - Dance Rooms',
     '46': 'CFA Studios - Large Music Rooms',
     '50': 'CFA Studios - Others',
@@ -259,3 +260,5 @@ filters = [{
     '22': 'University Town - Sports Hall 2',
     '51': 'YIH'
 }]
+
+opp_filters = [dict(zip(d.values(), d.keys())) for d in filters]
