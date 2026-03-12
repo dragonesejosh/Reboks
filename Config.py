@@ -1,5 +1,5 @@
 import urllib.parse as parse
-from Filters import filters
+from filters import filters
 import webbrowser
 
 group_booking = "https://reboks.nus.edu.sg/nus_public_web/public/index.php/facilities/group_booking?"
