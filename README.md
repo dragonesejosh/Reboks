@@ -1,6 +1,6 @@
 # Reboks
 
-Small helper script for building and opening NUS REBOKS facility booking and schedule URLs.
+Small CLI tool for building and opening NUS REBOKS facility booking and schedule URLs.
 
 This repo contains a lightweight Python configuration object (`Config`) plus a CLI entry script (`reboks.py`) that:
 - Builds query-string parameters (venue / day / date range / time range)
@@ -9,57 +9,102 @@ This repo contains a lightweight Python configuration object (`Config`) plus a C
 
 ## Files
 
-- `reboks.py` — simple CLI. Defines some handy venue aliases (e.g. `field`, `bball`, `mpsh1`–`mpsh6`, `track`, `usc`, `courts`) and opens the booking + schedule pages for each argument passed.
+- `reboks.py` — CLI entry point. Provides two subcommands: `list` (browse available venues) and `search` (open booking/schedule URLs for one or more numeric venue ids).
 - `config.py` — `Config` class that stores query parameters and provides helpers like `set_venue()`, `set_day()`, `set_date()`, `set_time()`, plus `open_booking()` and `open_schedule()`.
 - `filters.py` — lookup tables that map REBOKS numeric filter IDs (activity / venue / etc.) to human-readable names.
+- `parser.py` — helpers for encoding/decoding date and time strings to/from the REBOKS URL format.
 
 ## Requirements
 
-- Python 3.x
-- A default web browser (the script uses Python’s built-in `webbrowser` module)
+- Python 3.8+ (as specified in `pyproject.toml`)
+- A default web browser (the script uses Python's built-in `webbrowser` module)
+- [`python-dateutil`](https://pypi.org/project/python-dateutil/) for date/time parsing
 
-No third-party dependencies.
+## Installation
+
+The easiest way to install everything (Python package + all dependencies including `python-dateutil`) is:
+
+```bash
+pip install -e .
+```
+
+If you only want to run the scripts directly without installing the package, install the dependency manually:
+
+```bash
+pip install python-dateutil
+```
 
 ## Usage
 
-### Run with predefined aliases
+### List all venues
 
 ```bash
-python reboks.py field bball mpsh1 track
+reboks list
 ```
 
-### Run with a numeric venue id
-
-If an argument isn’t a known alias, it’s treated as a venue id:
+Look up specific venue ids:
 
 ```bash
-python reboks.py 40
+reboks list 8 40
+```
+
+### Search for a venue
+
+```bash
+reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM'
+```
+
+Search multiple venues at once:
+
+```bash
+reboks search 8 2 40 --date '28 Mar' --from '8 AM' --to '3 PM'
+```
+
+Use a date range instead of a single date:
+
+```bash
+reboks search 8 --date-from '1 Apr 2026' --date-to '30 Apr 2026' --from '8 AM' --to '3 PM'
+```
+
+Filter by day of week across a date range (Monday=1 … Saturday=6). For example, find all Saturdays in April:
+
+```bash
+reboks search 8 --date-from '1 Apr 2026' --date-to '30 Apr 2026' --from '8 AM' --to '3 PM' --day 6
 ```
 
 ### What happens
 
-For each argument, the script prints the resolved configuration (venue/day/date/time) and then opens two tabs/windows:
+For each venue id provided to `search`, the script prints the resolved configuration (venue/day/date/time) and the two URLs, then opens:
 
 1. Group booking search (availability)
 2. Booking schedule (existing bookings)
 
-## Customizing the search
+### Output-only mode
 
-Edit `reboks.py` to change the base search parameters:
+Pass `--no-open` to print the URLs without opening any browser tabs:
 
-```python
-base = Config(1).set_date("28 Mar").set_time("8 AM", "3 PM")
+```bash
+reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM' --no-open
 ```
 
-You can also build your own configs in a Python REPL/script:
+### Open only one page
+
+```bash
+reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM' --booking-only
+reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM' --schedule-only
+```
+
+## Using the `Config` API directly
+
+You can build your own configs in a Python REPL or script:
 
 ```python
 from config import Config
 
 c = (
     Config(8)
-    .set_day(2)               # Monday=1 ... Saturday=6
-    .set_date("28 Mar 2026")
+    .set_day(6)                               # Monday=1 ... Saturday=6
+    .set_date("1 Apr 2026", "30 Apr 2026")    # all Saturdays in April
     .set_time("08:00 AM", "03:00 PM")
 )
 
@@ -72,6 +117,7 @@ c.open_schedule()
 
 - Dates and times are URL-encoded internally.
 - `set_day()` with no argument removes the day filter (search across all days).
+- `--date` is a shorthand for setting both `--date-from` and `--date-to` to the same value; it cannot be combined with `--date-from`/`--date-to`.
 
 ## Disclaimer
 
