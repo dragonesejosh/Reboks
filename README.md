@@ -63,13 +63,13 @@ reboks search 8 2 40 --date '28 Mar' --from '8 AM' --to '3 PM'
 Use a date range instead of a single date:
 
 ```bash
-reboks search 8 --date-from '28 Mar' --date-to '30 Mar' --from '8 AM' --to '3 PM'
+reboks search 8 --date-from '1 Apr 2026' --date-to '30 Apr 2026' --from '8 AM' --to '3 PM'
 ```
 
-Filter by day of week (Monday=1 … Saturday=6):
+Filter by day of week across a date range (Monday=1 … Saturday=6). For example, find all Saturdays in April:
 
 ```bash
-reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM' --day 2
+reboks search 8 --date-from '1 Apr 2026' --date-to '30 Apr 2026' --from '8 AM' --to '3 PM' --day 6
 ```
 
 ### What happens
@@ -103,8 +103,8 @@ from config import Config
 
 c = (
     Config(8)
-    .set_day(2)                             # Monday=1 ... Saturday=6
-    .set_date("28 Mar 2026", "30 Mar 2026") # date_from, date_to
+    .set_day(6)                               # Monday=1 ... Saturday=6
+    .set_date("1 Apr 2026", "30 Apr 2026")    # all Saturdays in April
     .set_time("08:00 AM", "03:00 PM")
 )
 
