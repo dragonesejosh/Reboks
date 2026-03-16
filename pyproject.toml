@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reboks"
+version = "1.0.0"
+description = "CLI helper for NUS REBOKS booking URLs"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "python-dateutil"
+]
+
+[project.scripts]
+reboks = "reboks:main"
+
+[tool.setuptools]
+py-modules = ["reboks", "config", "filters", "parser"]
