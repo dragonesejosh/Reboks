@@ -1,7 +1,6 @@
 from filters import group_venue_filter
 import webbrowser
-import dateutil.parser as dateparser
-from datetime import datetime
+import parser
 
 group_booking = "https://reboks.nus.edu.sg/nus_public_web/public/index.php/facilities/group_booking?"
 schedule = "https://reboks.nus.edu.sg/nus_public_web/public/index.php/facilities/booking_schedule?"
@@ -60,54 +59,26 @@ class Config:
             return
         self.data['day_filter'] = str(day)
         return self
-    
-    def _parse_date(self, date_str):
-        """
-        e.g. 28 Mar, 28 Mar 2026 -> Sat%2C+28+Mar+2026
-        """
-        return dateparser.parse(date_str).date().strftime('%a%%2C+%d+%b+%Y')
-    
-    def _unparse_date(self, date_str):
-        """
-        e.g. Sat%2C+28+Mar+2026 -> 28 Mar 2026
-        """
-        return datetime.strptime(date_str, '%a%%2C+%d+%b+%Y').strftime('%d %b %Y')
-        #return dateparser.parse(date_str, format='%a%%2C+%d+%b+%Y').date().strftime('%d %b %Y')
 
     def set_date(self, date_from, date_to=None):
         """
         e.g. 28 Mar, 28 Mar 2026
         """
         # Parse the date strings into datetime objects -> Sat%2C+28+Mar+2026
-        parsed_date_from = self._parse_date(date_from)
+        parsed_date_from = parser.parse_date(date_from)
         self.data['date_filter_from'] = parsed_date_from
         if date_to:
-            self.data['date_filter_to'] = self._parse_date(date_to)
+            self.data['date_filter_to'] = parser.parse_date(date_to)
         else:
             self.data['date_filter_to'] = self.data['date_filter_from']
-        print(self.data['date_filter_from'])
-        print(self.data['date_filter_to'])
         return self
-    
-    def _parse_time(self, time_str):
-        """
-        e.g. 8 AM, 08:00 AM -> 08%3A00+AM
-        """
-        return dateparser.parse(time_str).time().strftime('%I%%3A%M+%p')
-    
-    def _unparse_time(self, time_str):
-        """
-        e.g. 08%3A00+AM -> 08:00 AM
-        """
-        return datetime.strptime(time_str, '%I%%3A%M+%p').strftime('%I:%M %p')
-        #return dateparser.parse(time_str, format='%I%%3A%M+%p').time().strftime('%I:%M %p')
 
     def set_time(self, time_from, time_to):
         """
         e.g. 8 AM, 08:00 AM
         """
-        self.data['time_filter_from'] = self._parse_time(time_from)
-        self.data['time_filter_to'] = self._parse_time(time_to)
+        self.data['time_filter_from'] = parser.parse_time(time_from)
+        self.data['time_filter_to'] = parser.parse_time(time_to)
         return self
 
     def open_booking(self):
@@ -149,11 +120,11 @@ class Config:
     
     def get_date(self):
         if self.data['date_filter_from'] == self.data['date_filter_to']:
-            return self._unparse_date(self.data['date_filter_from'])
-        return self._unparse_date(self.data['date_filter_from']) + " to " + self._unparse_date(self.data['date_filter_to'])
-    
+            return parser.unparse_date(self.data['date_filter_from'])
+        return parser.unparse_date(self.data['date_filter_from']) + " to " + parser.unparse_date(self.data['date_filter_to'])
+
     def get_time(self):
-        return self._unparse_time(self.data['time_filter_from']) + " to " + self._unparse_time(self.data['time_filter_to'])
+        return parser.unparse_time(self.data['time_filter_from']) + " to " + parser.unparse_time(self.data['time_filter_to'])
 
     def __str__(self):
         return f"""Venue:\t{self.get_venue()}

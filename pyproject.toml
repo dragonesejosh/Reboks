@@ -9,11 +9,11 @@ description = "CLI helper for NUS REBOKS booking URLs"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "dateutil"
+    "python-dateutil"
 ]
 
 [project.scripts]
 reboks = "reboks:main"
 
 [tool.setuptools]
-py-modules = ["reboks", "config", "filters"]
+py-modules = ["reboks", "config", "filters", "parser"]
