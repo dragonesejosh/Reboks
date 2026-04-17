@@ -118,29 +118,29 @@ def build_parser():
         help="Numeric venue ids.",
     )
     search_parser.add_argument(
-        "--date",
+        "--date", "-d",
         help="Single date for both from/to, for example '28 Mar'.",
     )
     search_parser.add_argument(
-        "--date-from",
+        "--date-from", "-df",
         help="Start date, for example '28 Mar'.",
     )
     search_parser.add_argument(
-        "--date-to",
+        "--date-to", "-dt",
         help="End date, for example '29 Mar'.",
     )
     search_parser.add_argument(
-        "--from",
+        "--from", "-f",
         dest="time_from",
         help="Start time, for example '8 AM'. Required.",
     )
     search_parser.add_argument(
-        "--to",
+        "--to", "-t",
         dest="time_to",
         help="End time, for example '3 PM'. Required.",
     )
     search_parser.add_argument(
-        "--day",
+        "--day", "-D",
         type=int,
         choices=[1, 2, 3, 4, 5, 6],
         help="Day filter, Monday=1 ... Saturday=6. Omit for Any.",

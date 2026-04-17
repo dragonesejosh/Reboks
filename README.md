@@ -72,6 +72,18 @@ Filter by day of week across a date range (Monday=1 … Saturday=6). For example
 reboks search 8 --date-from '1 Apr 2026' --date-to '30 Apr 2026' --from '8 AM' --to '3 PM' --day 6
 ```
 
+## Parameter Short Forms
+Most common parameters have a short form:
+
+| Short | Long
+|-|-
+| `-d` | `--date`
+| `-df` | `--date-from`
+| `-dt` | `--date-to`
+| `-f` | `--from` (time)
+| `-t` | `--to` (time)
+| `-D` | `--day`
+
 ### What happens
 
 For each venue id provided to `search`, the script prints the resolved configuration (venue/day/date/time) and the two URLs, then opens:
