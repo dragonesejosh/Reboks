@@ -56,6 +56,9 @@ reboks list 8 40
 
 ### Search for a venue
 
+**NOTE:** Before searching any venues, go through the normal steps to get to the Block Booking page, then run the commands.
+This ensures that Reboks is in the correct session and will process the urls.
+
 ```powershell
 reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM'
 ```
@@ -89,6 +92,11 @@ Most common parameters have a short form:
 | `-f` | `--from` (time)
 | `-t` | `--to` (time)
 | `-D` | `--day`
+
+For example:
+```powershell
+reboks search 8 -df '1 Apr 2026' -dt '30 Apr 2026' -f '8 AM' -t '3 PM' -D 6
+```
 
 ### What happens
 
