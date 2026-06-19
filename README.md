@@ -14,63 +14,81 @@ This repo contains a lightweight Python configuration object (`Config`) plus a C
 - `filters.py` — lookup tables that map REBOKS numeric filter IDs (activity / venue / etc.) to human-readable names.
 - `parser.py` — helpers for encoding/decoding date and time strings to/from the REBOKS URL format.
 
-## Requirements
 
-- Python 3.8+ (as specified in `pyproject.toml`)
+## Install (Windows)
+
+### Prerequisites
+- Python 3.8+
 - A default web browser (the script uses Python's built-in `webbrowser` module)
 - [`python-dateutil`](https://pypi.org/project/python-dateutil/) for date/time parsing
+- `pip` installed
 
-## Installation
-
-The easiest way to install everything (Python package + all dependencies including `python-dateutil`) is:
-
-```bash
-pip install -e .
+### Option 1: Install directly from GitHub (recommended)
+```powershell
+pip install "git+https://github.com/dragonesejosh/Reboks.git"
 ```
 
-If you only want to run the scripts directly without installing the package, install the dependency manually:
+### Option 2: Install from a local clone
+```powershell
+git clone https://github.com/dragonesejosh/Reboks.git
+cd Reboks
+pip install .
+```
 
-```bash
-pip install python-dateutil
+### Verify installation
+```powershell
+reboks --help
 ```
 
 ## Usage
 
 ### List all venues
 
-```bash
+```powershell
 reboks list
 ```
 
 Look up specific venue ids:
 
-```bash
+```powershell
 reboks list 8 40
 ```
 
 ### Search for a venue
 
-```bash
+```powershell
 reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM'
 ```
 
 Search multiple venues at once:
 
-```bash
+```powershell
 reboks search 8 2 40 --date '28 Mar' --from '8 AM' --to '3 PM'
 ```
 
 Use a date range instead of a single date:
 
-```bash
+```powershell
 reboks search 8 --date-from '1 Apr 2026' --date-to '30 Apr 2026' --from '8 AM' --to '3 PM'
 ```
 
 Filter by day of week across a date range (Monday=1 … Saturday=6). For example, find all Saturdays in April:
 
-```bash
+```powershell
 reboks search 8 --date-from '1 Apr 2026' --date-to '30 Apr 2026' --from '8 AM' --to '3 PM' --day 6
 ```
+
+## Parameter Short Forms
+Most common parameters have a short form:
+
+| Short | Long
+|-|-
+| `-d` | `--date`
+| `-df` | `--date-from`
+| `-dt` | `--date-to`
+| `-f` | `--from` (time)
+| `-t` | `--to` (time)
+| `-D` | `--day`
 
 ### What happens
 
@@ -83,13 +101,13 @@ For each venue id provided to `search`, the script prints the resolved configura
 
 Pass `--no-open` to print the URLs without opening any browser tabs:
 
-```bash
+```powershell
 reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM' --no-open
 ```
 
 ### Open only one page
 
-```bash
+```powershell
 reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM' --booking-only
 reboks search 8 --date '28 Mar' --from '8 AM' --to '3 PM' --schedule-only
 ```
